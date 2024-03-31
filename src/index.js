@@ -1,12 +1,12 @@
-// ignoramos a index.js nos testes pois é o entry point da aplicação
-// não fazemos testes unitarios nela, apenas testes e2e
+// we ignore index.js in the tests because it is the entry point of the application
+// we don't do unit tests on it, only e2e tests
 
 import Todo from "./todo.js"
 import TodoRepository from "./todoRepository.js"
 import TodoService from "./todoService.js"
 import loki from 'lokijs'
 
-// poderia estar num arquivo factory
+// could be in a factory file
 const db = new loki('todo', {})
 const todoRepository = new TodoRepository({ db })
 const todoService = new TodoService({ todoRepository })

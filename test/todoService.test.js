@@ -88,7 +88,29 @@ describe('todoService test Suite', () => {
             assert.deepStrictEqual(JSON.stringify(result), JSON.stringify(expected))
         })
 
-        it(`should save todo item with late status when the property is further than today`, async () => {
+        it(`should save todo item with pending status when the property is in the past`, async () => {
+            const properties = {
+                text: 'I must plan my trip to Europe',
+                when: new Date('2020-12-02 12:00:00 GMT-0')
+            }
+            const input = new Todo(properties)
+            const expected = {
+                ...properties,
+                status: 'pending',
+                id: DEFAULT_ID
+            }
+
+            const today = new Date('2020-12-01')
+            _sandbox.useFakeTimers(today.getTime())
+
+            await _todoService.create(input)
+
+            const fnMock = _dependencies.todoRepository.create.mock
+            assert.strictEqual(fnMock.callCount(), 1)
+            assert.deepStrictEqual(fnMock.calls[0].arguments[0], expected)
+        })
+
+        it(`should save todo item with late status when the property is in the future`, async () => {
             const properties = {
                 text: 'I must plan my trip to Europe',
                 when: new Date('2020-12-01 12:00:00 GMT-0')
@@ -102,8 +124,6 @@ describe('todoService test Suite', () => {
 
             const today = new Date('2020-12-02')
             _sandbox.useFakeTimers(today.getTime())
-
-            console.log(_todoService)
 
             await _todoService.create(input)
 

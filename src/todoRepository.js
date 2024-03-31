@@ -1,3 +1,4 @@
+import Todo from "./todo.js";
 
 export default class TodoRepository {
     #schedule
@@ -6,21 +7,13 @@ export default class TodoRepository {
     }
 
     async list() {
-        // deveria ser um .project() mas não temos no lokijs
+        // Should use .find().map() to return only data without metadata
         return this.#schedule.find().map(({ meta, $loki, ...result }) => result)
     }
 
     async create(data) {
+        // Destructure $loki and meta from the result object
         const { $loki, meta, ...result } = this.#schedule.insertOne(data)
-        return result
+        return new Todo(result)
     }
 }
-
-
-
-// const c = new TodoRepository()
-
-// c.create({ name: 'XuxaDaSilva', age: 90})
-// c.create({ name: 'Joaozinho', age: 90})
-
-// console.log('list', c.list())
